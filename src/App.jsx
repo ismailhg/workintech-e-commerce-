@@ -1,8 +1,17 @@
+import { BrowserRouter as Router } from "react-router-dom";
+import Header from "./layout/Header";
+import Footer from "./layout/Footer";
+import PageContent from "./layout/PageContent";
+
 function App() {
   return (
-    <div className="bg-black text-white h-screen flex items-center justify-center">
-      Tailwind çalısıyor
-    </div>
+    <Router>
+      <div className="flex flex-col min-h-screen">
+        <Header />
+        <PageContent />
+        <Footer />
+      </div>
+    </Router>
   );
 }
 
