@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   Search,
@@ -14,13 +14,26 @@ import {
   Facebook,
   Instagram,
 } from "lucide-react";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchCategories } from "../store/actions/categoryActions";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
+  const [shopOpen, setShopOpen] = useState(false);
 
   const toggleNavbar = () => {
     setIsOpen(!isOpen);
   };
+
+  const user = useSelector((state) => state.client.user);
+
+  const dispatch = useDispatch();
+
+  const categories = useSelector((state) => state.product.categories);
+
+  useEffect(() => {
+    dispatch(fetchCategories());
+  }, [dispatch]);
 
   return (
     <header className="md:mb-5">
@@ -91,9 +104,51 @@ export default function Header() {
           <div className="flex grow justify-between items-center ml-30">
             <nav className="flex gap-[0.938rem] text-sm font-bold leading-6 text-[#737373]">
               <Link to="/">Home</Link>
-              <div className="flex gap-1.5 items-center">
+              <div
+                className="relative flex gap-1.5 items-center cursor-pointer"
+                onMouseEnter={() => setShopOpen(true)}
+                onMouseLeave={() => setShopOpen(false)}
+              >
                 <Link to="/shop">Shop</Link>
                 <ChevronDown size={16} />
+
+                {shopOpen && (
+                  <div className="absolute top-full left-0 bg-white shadow-lg p-6 flex gap-16 z-50">
+                    {/* WOMEN */}
+                    <div className="flex flex-col gap-2">
+                      <span className="font-bold text-[#252B42]">Kadın</span>
+
+                      {categories
+                        ?.filter((c) => c.gender === "k")
+                        .map((cat) => (
+                          <Link
+                            key={cat.id}
+                            to={`/shop/kadin/${cat.title}/${cat.id}`}
+                            className="text-[#737373] hover:text-black"
+                          >
+                            {cat.title}
+                          </Link>
+                        ))}
+                    </div>
+
+                    {/* MEN */}
+                    <div className="flex flex-col gap-2">
+                      <span className="font-bold text-[#252B42]">Erkek</span>
+
+                      {categories
+                        ?.filter((c) => c.gender === "e")
+                        .map((cat) => (
+                          <Link
+                            key={cat.id}
+                            to={`/shop/erkek/${cat.title}/${cat.id}`}
+                            className="text-[#737373] hover:text-black"
+                          >
+                            {cat.title}
+                          </Link>
+                        ))}
+                    </div>
+                  </div>
+                )}
               </div>
               <Link to="/about">About</Link>
               <Link to="/blog">Blog</Link>
@@ -104,9 +159,18 @@ export default function Header() {
             <div className="flex text-[#23A6F0] text-sm font-bold leading-6 gap-3.5 items-center">
               <div className="flex gap-[0.313rem] items-center mr-3">
                 <User size={16} />
-                <Link to="/login">Login</Link>
-                <span>/</span>
-                <Link to="/signup">Register</Link>
+
+                {user?.name ? (
+                  <>
+                    <span>Welcome, {user.name}</span>
+                  </>
+                ) : (
+                  <>
+                    <Link to="/login">Login</Link>
+                    <span>/</span>
+                    <Link to="/signup">Register</Link>
+                  </>
+                )}
               </div>
               <Search size={16} />
               <ShoppingCart size={16} />

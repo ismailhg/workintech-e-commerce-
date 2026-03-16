@@ -1,9 +1,16 @@
 import { ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 import ShopCategoryCard from "./ShopCategoryCard";
-import product1 from "/src/assets/product1.jpg";
 
 export default function ShopCategories() {
+  const categories = useSelector((state) => state.product.categories);
+
+  // rating'e göre top 5 category
+  const topCategories = [...categories]
+    .sort((a, b) => b.rating - a.rating)
+    .slice(0, 5);
+
   return (
     <div className="bg-[#FAFAFA] py-14">
       <div className="max-w-[1200px] mx-auto px-5">
@@ -22,8 +29,8 @@ export default function ShopCategories() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-          {[...Array(5)].map((_, index) => (
-            <ShopCategoryCard key={index} image={product1} />
+          {topCategories.map((cat) => (
+            <ShopCategoryCard key={cat.id} category={cat} />
           ))}
         </div>
       </div>

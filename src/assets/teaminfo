@@ -1,0 +1,53 @@
+import teammember from "/src/assets/teammember.jpg";
+
+export const team = [
+  {
+    name: "Gökhan Özdemir",
+    role: "Project Manager",
+    avatar: teammember,
+    id: "1",
+  },
+  {
+    name: "İsmail Hakkı Gündoğdu",
+    role: "Full Stack Developer",
+    avatar:teammember,
+    id: "2",
+  },
+  {
+    name: "Jerome Bell",
+    role: "IBM",
+    avatar:teammember,
+    id: "3",
+  },
+  {
+    name: "Jerome Bell",
+    role: "IBM",
+    avatar:teammember,
+    id: "4",
+  },
+  {
+    name: "Jerome Bell",
+    role: "IBM",
+    avatar:teammember,
+    id: "5",
+  },
+  {
+    name: "Jerome Bell",
+    role: "IBM",
+    avatar:teammember,
+    id: "6",
+  },
+  {
+    name: "Jerome Bell",
+    role: "IBM",
+    avatar:teammember,
+    id: "7",
+  },
+  {
+    name: "Jerome Bell",
+    role: "IBM",
+    avatar:teammember,
+    id: "8",
+  },
+
+];
