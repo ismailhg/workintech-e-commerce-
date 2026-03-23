@@ -6,7 +6,6 @@ import ShopCategoryCard from "./ShopCategoryCard";
 export default function ShopCategories() {
   const categories = useSelector((state) => state.product.categories);
 
-  // rating'e göre top 5 category
   const topCategories = [...categories]
     .sort((a, b) => b.rating - a.rating)
     .slice(0, 5);

@@ -114,7 +114,6 @@ export default function Header() {
 
                 {shopOpen && (
                   <div className="absolute top-full left-0 bg-white shadow-lg p-6 flex gap-16 z-50">
-                    {/* WOMEN */}
                     <div className="flex flex-col gap-2">
                       <span className="font-bold text-[#252B42]">Kadın</span>
 
@@ -131,7 +130,6 @@ export default function Header() {
                         ))}
                     </div>
 
-                    {/* MEN */}
                     <div className="flex flex-col gap-2">
                       <span className="font-bold text-[#252B42]">Erkek</span>
 

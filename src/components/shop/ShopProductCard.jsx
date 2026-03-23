@@ -1,20 +1,28 @@
-export default function ShopProductCard({ image }) {
+export default function ShopProductCard({ product }) {
   return (
     <div className="w-full flex flex-col items-center">
       <div className="w-full aspect-[4/5] overflow-hidden">
-        <img src={image} className="w-full h-full object-cover" />
+        <img
+          src={product.images?.[0]?.url}
+          className="w-full h-full object-cover"
+        />
       </div>
 
       <div className="text-center mt-6 space-y-2">
-        <h5 className="text-base font-bold text-[#252B42]">Graphic Design</h5>
+        <h5 className="text-base font-bold text-[#252B42]">{product.name}</h5>
 
-        <p className="text-sm font-bold text-[#737373]">English Department</p>
+        <p className="text-sm font-bold text-[#737373]">
+          {product.category?.name}
+        </p>
 
         <div className="flex justify-center gap-2">
           <span className="text-base font-bold text-[#BDBDBD] line-through">
-            $16.48
+            ${product.price + 10}
           </span>
-          <span className="text-base font-bold text-[#23856D]">$6.48</span>
+
+          <span className="text-base font-bold text-[#23856D]">
+            ${product.price}
+          </span>
         </div>
 
         <div className="flex justify-center gap-2 pt-2">

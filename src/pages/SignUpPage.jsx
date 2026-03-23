@@ -97,8 +97,6 @@ export default function SignUpPage() {
           Create Account
         </h2>
 
-        {/* NAME */}
-
         <div className="flex flex-col">
           <label>Name</label>
 
@@ -118,8 +116,6 @@ export default function SignUpPage() {
           )}
         </div>
 
-        {/* EMAIL */}
-
         <div className="flex flex-col">
           <label>Email</label>
 
@@ -138,8 +134,6 @@ export default function SignUpPage() {
             <p className="text-red-500 text-sm">{errors.email.message}</p>
           )}
         </div>
-
-        {/* PASSWORD */}
 
         <div className="flex flex-col">
           <label>Password</label>
@@ -161,8 +155,6 @@ export default function SignUpPage() {
           )}
         </div>
 
-        {/* CONFIRM PASSWORD */}
-
         <div className="flex flex-col">
           <label>Confirm Password</label>
 
@@ -183,8 +175,6 @@ export default function SignUpPage() {
           )}
         </div>
 
-        {/* ROLE */}
-
         <div className="flex flex-col">
           <label>Role</label>
 
@@ -200,8 +190,6 @@ export default function SignUpPage() {
             ))}
           </select>
         </div>
-
-        {/* STORE FIELDS */}
 
         {selectedRole == 2 && (
           <div className="flex flex-col gap-4">
@@ -278,8 +266,6 @@ export default function SignUpPage() {
             )}
           </div>
         )}
-
-        {/* SUBMIT */}
 
         <button
           disabled={!isValid || isSubmitting}

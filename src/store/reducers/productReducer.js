@@ -2,9 +2,11 @@ const initialState = {
   categories: [],
   productList: [],
   total: 0,
-  limit: 25,
+  limit: 12,
   offset: 0,
   filter: "",
+  sort: "",
+  categoryId: null,
   fetchState: "NOT_FETCHED"
 };
 
@@ -31,6 +33,12 @@ export default function productReducer(state = initialState, action) {
 
     case "SET_FILTER":
       return { ...state, filter: action.payload };
+    
+    case "SET_SORT":
+      return { ...state, sort: action.payload };
+
+    case "SET_CATEGORY_ID":
+      return { ...state, categoryId: action.payload };
 
     default:
       return state;
