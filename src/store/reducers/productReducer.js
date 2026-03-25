@@ -7,6 +7,7 @@ const initialState = {
   filter: "",
   sort: "",
   categoryId: null,
+  selectedProduct: null,
   fetchState: "NOT_FETCHED"
 };
 
@@ -39,6 +40,9 @@ export default function productReducer(state = initialState, action) {
 
     case "SET_CATEGORY_ID":
       return { ...state, categoryId: action.payload };
+
+    case "SET_SELECTED_PRODUCT":
+      return { ...state, selectedProduct: action.payload };
 
     default:
       return state;

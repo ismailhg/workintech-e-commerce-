@@ -71,6 +71,17 @@ export default function ShopProducts() {
     );
   }
 
+  const slugify = (text) =>
+    text
+      ?.toLowerCase()
+      .replace(/ı/g, "i")
+      .replace(/ğ/g, "g")
+      .replace(/ü/g, "u")
+      .replace(/ş/g, "s")
+      .replace(/ö/g, "o")
+      .replace(/ç/g, "c")
+      .replace(/\s+/g, "-") || "kategori";
+
   return (
     <div className="max-w-[1200px] mx-auto px-5 py-20">
       <div className="flex flex-col items-center gap-8 mb-16 md:flex-row md:justify-between md:items-center">
@@ -144,8 +155,8 @@ export default function ShopProducts() {
         {products.map((product) => (
           <Link
             key={product.id}
-            to={`/product/${product.id}`}
-            className="w-full"
+            to={`/shop/${slugify(product.category?.gender || "kadin")}/${slugify(product.category?.name)}/${product.category_id}/${slugify(product.name)}/${product.id}`}
+            className="w-full cursor-pointer"
           >
             <ShopProductCard product={product} />
           </Link>

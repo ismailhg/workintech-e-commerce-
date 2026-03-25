@@ -42,3 +42,8 @@ export const setCategoryId = (categoryId) => ({
   type: "SET_CATEGORY_ID",
   payload: categoryId
 });
+
+export const setSelectedProduct = (product) => ({
+  type: "SET_SELECTED_PRODUCT",
+  payload: product
+});

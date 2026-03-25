@@ -6,19 +6,82 @@ import {
   Eye,
   Star,
 } from "lucide-react";
-import { useState } from "react";
-
-import product1 from "/src/assets/product1.jpg";
-import product2 from "/src/assets/product2.jpg";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams, useHistory } from "react-router-dom";
 
 import FeaturedProductCards from "../components/FeaturedProductsCards";
 import BrandSection from "../components/BrandSection";
 
-const images = [product1, product2];
+import { fetchProductById } from "../store/thunks/productThunks";
+
+import { setCart } from "../store/actions/shoppingCartActions";
 
 const ProductDetails = () => {
   const [activeImage, setActiveImage] = useState(0);
 
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const { productId } = useParams();
+
+  const product = useSelector((state) => state.product.selectedProduct);
+  const fetchState = useSelector((state) => state.product.fetchState);
+  const cart = useSelector((state) => state.shoppingCart.cart);
+
+  useEffect(() => {
+    if (productId) {
+      dispatch(fetchProductById(productId));
+    }
+  }, [dispatch, productId]);
+
+  useEffect(() => {
+    setActiveImage(0);
+  }, [product]);
+
+  if (fetchState === "FETCHING") {
+    return (
+      <div className="max-w-[1080px] mx-auto px-6 py-20 text-center">
+        Loading product...
+      </div>
+    );
+  }
+
+  if (fetchState === "FAILED") {
+    return (
+      <div className="max-w-[1080px] mx-auto px-6 py-20 text-center text-red-500">
+        Product could not be loaded...
+      </div>
+    );
+  }
+
+  if (!product) return null;
+
+  const images = product.images || [];
+
+  const handleAddToCart = () => {
+    const existing = cart.find((item) => item.product.id === product.id);
+
+    let newCart;
+
+    if (existing) {
+      newCart = cart.map((item) =>
+        item.product.id === product.id
+          ? { ...item, count: item.count + 1 }
+          : item,
+      );
+    } else {
+      newCart = [
+        ...cart,
+        {
+          count: 1,
+          checked: true,
+          product,
+        },
+      ];
+    }
+
+    dispatch(setCart(newCart));
+  };
   return (
     <div className="max-w-[1080px] mx-auto px-6 py-12">
       <div className="flex items-center gap-2 text-sm mb-10">
@@ -31,7 +94,7 @@ const ProductDetails = () => {
         <div>
           <div className="relative w-full aspect-[4/5] overflow-hidden rounded-lg">
             <img
-              src={images[activeImage]}
+              src={images[activeImage]?.url}
               className="w-full h-full object-cover"
             />
 
@@ -43,7 +106,7 @@ const ProductDetails = () => {
               }
               className="absolute left-6 top-1/2 -translate-y-1/2 text-white"
             >
-              <ChevronLeft size={56} strokeWidth={2} />
+              <ChevronLeft size={56} />
             </button>
 
             <button
@@ -54,7 +117,7 @@ const ProductDetails = () => {
               }
               className="absolute right-6 top-1/2 -translate-y-1/2 text-white"
             >
-              <ChevronRight size={56} strokeWidth={2} />
+              <ChevronRight size={56} />
             </button>
           </div>
 
@@ -63,9 +126,9 @@ const ProductDetails = () => {
               <div
                 key={index}
                 onClick={() => setActiveImage(index)}
-                className={`w-[80px] aspect-[4/5] overflow-hidden rounded cursor-pointer }`}
+                className="w-[80px] aspect-[4/5] overflow-hidden rounded cursor-pointer"
               >
-                <img src={img} className="w-full h-full object-cover" />
+                <img src={img.url} className="w-full h-full object-cover" />
               </div>
             ))}
           </div>
@@ -73,41 +136,43 @@ const ProductDetails = () => {
 
         <div className="flex flex-col gap-6">
           <h1 className="text-2xl font-semibold text-[#252B42]">
-            Floating Phone
+            {product.name}
           </h1>
 
           <div className="flex items-center mt-2 gap-3">
             <div className="flex text-yellow-400">
-              {[...Array(4)].map((_, i) => (
+              {[...Array(Math.round(product.rating || 0))].map((_, i) => (
                 <Star key={i} size={18} fill="currentColor" />
               ))}
-
-              <Star size={18} />
             </div>
 
-            <span className="text-gray-500 text-sm">10 Reviews</span>
+            <span className="text-gray-500 text-sm">
+              {product.sell_count} Reviews
+            </span>
           </div>
 
-          <p className="text-2xl mt-2 font-bold text-[#252B42]">$1,139.33</p>
+          <p className="text-2xl mt-2 font-bold text-[#252B42]">
+            ${product.price}
+          </p>
 
           <p className="text-sm mt-5">
             <span className="text-gray-500">Availability :</span>
-            <span className="text-[#23A6F0] ml-1 font-medium">In Stock</span>
+            <span className="text-[#23A6F0] ml-1 font-medium">
+              {product.stock > 0 ? "In Stock" : "Out of Stock"}
+            </span>
           </p>
 
           <p className="text-gray-500 text-sm mt-5 leading-relaxed max-w-[420px]">
-            Met minim Mollie non desert Alamo est sit cliquey dolor do met sent.
-            RELIT official consequat door ENIM RELIT Mollie. Excitation venial
-            consequat sent nostr.
+            {product.description}
           </p>
 
           <hr className="my-2" />
 
           <div className="flex mt-5 gap-4">
-            <div className="w-6 h-6 rounded-full bg-blue-400 cursor-pointer" />
-            <div className="w-6 h-6 rounded-full bg-green-400 cursor-pointer" />
-            <div className="w-6 h-6 rounded-full bg-orange-400 cursor-pointer" />
-            <div className="w-6 h-6 rounded-full bg-gray-800 cursor-pointer" />
+            <div className="w-6 h-6 rounded-full bg-blue-400" />
+            <div className="w-6 h-6 rounded-full bg-green-400" />
+            <div className="w-6 h-6 rounded-full bg-orange-400" />
+            <div className="w-6 h-6 rounded-full bg-gray-800" />
           </div>
 
           <div className="flex items-center mt-15 gap-4 pt-2">
@@ -115,15 +180,18 @@ const ProductDetails = () => {
               Select Options
             </button>
 
-            <button className="w-10 h-10 flex items-center justify-center border rounded-full">
+            <button className="w-10 h-10 border rounded-full flex items-center justify-center">
               <Heart size={18} />
             </button>
 
-            <button className="w-10 h-10 flex items-center justify-center border rounded-full">
+            <button
+              onClick={handleAddToCart}
+              className="w-10 h-10 border rounded-full flex items-center justify-center cursor-pointer"
+            >
               <ShoppingCart size={18} />
             </button>
 
-            <button className="w-10 h-10 flex items-center justify-center border rounded-full">
+            <button className="w-10 h-10 border rounded-full flex items-center justify-center">
               <Eye size={18} />
             </button>
           </div>
@@ -145,7 +213,10 @@ const ProductDetails = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-14">
           <div className="w-full aspect-[4/5] overflow-hidden rounded-lg">
-            <img src={product1} className="w-full h-full object-cover" />
+            <img
+              src={product.images?.[0]?.url}
+              className="w-full h-full object-cover"
+            />
           </div>
 
           <div>
@@ -179,12 +250,25 @@ const ProductDetails = () => {
               </h3>
 
               <ul className="flex flex-col gap-3 text-sm text-gray-500">
-                {[1, 2, 3, 4].map((i) => (
-                  <li key={i} className="flex items-center gap-2">
-                    <ChevronRight size={20} />
-                    the quick fox jumps over the lazy dog
-                  </li>
-                ))}
+                <li className="flex items-center gap-2">
+                  <ChevronRight size={20} />
+                  Stock: {product.stock}
+                </li>
+
+                <li className="flex items-center gap-2">
+                  <ChevronRight size={20} />
+                  Rating: {product.rating}
+                </li>
+
+                <li className="flex items-center gap-2">
+                  <ChevronRight size={20} />
+                  Sold: {product.sell_count}
+                </li>
+
+                <li className="flex items-center gap-2">
+                  <ChevronRight size={20} />
+                  Category ID: {product.category_id}
+                </li>
               </ul>
             </div>
 

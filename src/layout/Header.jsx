@@ -20,6 +20,7 @@ import { fetchCategories } from "../store/actions/categoryActions";
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [shopOpen, setShopOpen] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
 
   const toggleNavbar = () => {
     setIsOpen(!isOpen);
@@ -30,6 +31,10 @@ export default function Header() {
   const dispatch = useDispatch();
 
   const categories = useSelector((state) => state.product.categories);
+
+  const cart = useSelector((state) => state.shoppingCart.cart || []);
+
+  const total = cart.reduce((acc, item) => acc + item.count, 0);
 
   useEffect(() => {
     dispatch(fetchCategories());
@@ -171,7 +176,64 @@ export default function Header() {
                 )}
               </div>
               <Search size={16} />
-              <ShoppingCart size={16} />
+              <div
+                className="relative"
+                onMouseEnter={() => setCartOpen(true)}
+                onMouseLeave={() => setCartOpen(false)}
+              >
+                <div className="flex items-center gap-1 cursor-pointer">
+                  <ShoppingCart size={16} />
+                  <span>{total}</span>
+                </div>
+
+                {cartOpen && (
+                  <div className="absolute right-0 top-full w-[280px] bg-white shadow-lg rounded-lg p-4 z-50">
+                    <h3 className="font-semibold text-sm mb-3">
+                      Sepetim ({cart.length} Ürün)
+                    </h3>
+
+                    {cart.length === 0 && (
+                      <p className="text-xs text-gray-500">Sepet boş</p>
+                    )}
+
+                    {cart.map((item) => (
+                      <div key={item.product.id} className="flex gap-3 mb-3">
+                        <img
+                          src={item.product.images?.[0]?.url}
+                          className="w-12 h-12 object-cover rounded"
+                        />
+
+                        <div className="flex-1">
+                          <p className="text-xs font-medium line-clamp-2">
+                            {item.product.name}
+                          </p>
+
+                          <p className="text-xs text-gray-500">
+                            Adet: {item.count}
+                          </p>
+
+                          <p className="text-xs font-bold text-red-500">
+                            {item.product.price} TL
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+
+                    <div className="flex gap-2 mt-3">
+                      <Link
+                        to="/shoppingcart"
+                        className="flex-1 border text-center py-1.5 rounded text-xs"
+                      >
+                        Sepete Git
+                      </Link>
+
+                      <button className="flex-1 bg-blue-500 text-white py-1.5 rounded text-xs">
+                        Sipariş
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
               <Heart size={16} />
             </div>
           </div>
